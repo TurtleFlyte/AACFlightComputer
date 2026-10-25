@@ -1,28 +1,23 @@
 #include <Arduino.h>
 #include <Adafruit_BMP085.h>
-#include <Adafruit_MPU6050.h>
+#include <CoreTypes.h>
+#include <ImuLowG.h>
 
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 
 static Adafruit_BMP085 bmp;
-static Adafruit_MPU6050 mpu;
+static ImuLowG imu;
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  delay(1000);
+  while (!Serial) {;}
 
-  if (!mpu.begin(MPU6050_I2CADDR_DEFAULT)) {
-    Serial.println("Failed to find MPU6050 chip");
-    while (1) {
-      delay(10);
-    }
-  }
+  Wire.begin();
+  Wire.setClock(400000);
 
-  mpu.setAccelerometerRange(MPU6050_RANGE_16_G);
-  mpu.setGyroRange(MPU6050_RANGE_500_DEG);
-  mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
+  imu.init();
 
   if (!bmp.begin(BMP085_I2CADDR)) {
     Serial.println("Failed to find BMP085 chip");
@@ -34,28 +29,28 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  sensors_event_t a, g, temp;
-  mpu.getEvent(&a, &g, &temp);
+  Sample sample;
+  imu.update(sample);
 
   /* Print out the values */
   Serial.print("Acceleration X: ");
-  Serial.print(a.acceleration.x);
+  Serial.print(sample.ax);
   Serial.print(", Y: ");
-  Serial.print(a.acceleration.y);
+  Serial.print(sample.ay);
   Serial.print(", Z: ");
-  Serial.print(a.acceleration.z);
+  Serial.print(sample.az);
   Serial.println(" m/s^2");
 
   Serial.print("Rotation X: ");
-  Serial.print(g.gyro.x);
+  Serial.print(sample.gx);
   Serial.print(", Y: ");
-  Serial.print(g.gyro.y);
+  Serial.print(sample.gy);
   Serial.print(", Z: ");
-  Serial.print(g.gyro.z);
+  Serial.print(sample.gz);
   Serial.println(" rad/s");
 
   Serial.print("Temperature: ");
-  Serial.print(temp.temperature);
+  Serial.print(sample.temp);
   Serial.println(" degC");
 
   Serial.println("");

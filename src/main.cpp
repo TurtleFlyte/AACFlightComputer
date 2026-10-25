@@ -1,36 +1,33 @@
 #include <Arduino.h>
-#include <Adafruit_BMP085.h>
 #include <CoreTypes.h>
 #include <ImuLowG.h>
+#include <Baro.h>
 
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 
-static Adafruit_BMP085 bmp;
+#include "config.h"
+
+static Baro baro;
 static ImuLowG imu;
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
+  Serial.begin(115200);
   while (!Serial) {;}
 
   Wire.begin();
   Wire.setClock(400000);
 
   imu.init();
-
-  if (!bmp.begin(BMP085_I2CADDR)) {
-    Serial.println("Failed to find BMP085 chip");
-    while (1) {
-      delay(10);
-    }
-  }
+  baro.init();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Sample sample;
+  Sample sample{};
   imu.update(sample);
+  baro.update(sample);
 
   /* Print out the values */
   Serial.print("Acceleration X: ");
@@ -49,34 +46,23 @@ void loop() {
   Serial.print(sample.gz);
   Serial.println(" rad/s");
 
-  Serial.print("Temperature: ");
-  Serial.print(sample.temp);
-  Serial.println(" degC");
-
   Serial.println("");
 
-  Serial.print("Temperature = ");
-  Serial.print(bmp.readTemperature());
+  Serial.print("Temperature: ");
+  Serial.print(sample.temp_c);
   Serial.println(" *C");
 
-  Serial.print("Pressure = ");
-  Serial.print(bmp.readPressure());
+  Serial.print("Pressure: ");
+  Serial.print(sample.pressure_pa);
   Serial.println(" Pa");
 
   // Calculate altitude assuming 'standard' barometric
   // pressure of 1013.25 millibar = 101325 Pascal
-  Serial.print("Altitude = ");
-  Serial.print(bmp.readAltitude());
-  Serial.println(" meters");
-
-  Serial.print("Pressure at sealevel (calculated) = ");
-  Serial.print(bmp.readSealevelPressure());
-  Serial.println(" Pa");
-
-  Serial.print("Real altitude = ");
-  Serial.print(bmp.readAltitude(101500));
+  const float alt = 44330 * (1.0 - pow(sample.pressure_pa / 101500, 0.1903));
+  Serial.print("Real Altitude: ");
+  Serial.print(alt);
   Serial.println(" meters");
 
   Serial.println();
-  delay(100);
+  delay(LOOP_PERIOD_MS);
 }

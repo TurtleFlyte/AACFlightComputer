@@ -23,5 +23,4 @@ void ImuLowG::update(Sample& sample) {
     sample.gx = g.gyro.x;
     sample.gy = g.gyro.y;
     sample.gz = g.gyro.z;
-    sample.temp = t.temperature;
 }

@@ -8,8 +8,8 @@
 
 #include "config.h"
 
-static Baro baro;
-static ImuLowG imu;
+static Baro s_baro;
+static ImuLowG s_imu;
 
 void setup() {
   // put your setup code here, to run once:
@@ -19,15 +19,15 @@ void setup() {
   Wire.begin();
   Wire.setClock(400000);
 
-  imu.init();
-  baro.init();
+  s_imu.init();
+  s_baro.init();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   Sample sample{};
-  imu.update(sample);
-  baro.update(sample);
+  s_imu.update(sample);
+  s_baro.update(sample);
 
   /* Print out the values */
   Serial.print("Acceleration X: ");

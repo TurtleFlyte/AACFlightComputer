@@ -8,5 +8,5 @@ public:
     void update(Sample& sample);
 
 private:
-    Adafruit_MPU6050 mpu;
+    Adafruit_MPU6050 m_mpu;
 };

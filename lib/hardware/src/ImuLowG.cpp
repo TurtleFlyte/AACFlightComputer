@@ -1,11 +1,11 @@
 #include <ImuLowG.h>
 
 bool ImuLowG::init(TwoWire& twire) {
-    if (!mpu.begin(MPU6050_I2CADDR_DEFAULT, &twire)) return false;
+    if (!m_mpu.begin(MPU6050_I2CADDR_DEFAULT, &twire)) return false;
 
-    mpu.setAccelerometerRange(MPU6050_RANGE_16_G);
-    mpu.setGyroRange(MPU6050_RANGE_1000_DEG);
-    mpu.setFilterBandwidth(MPU6050_BAND_44_HZ);
+    m_mpu.setAccelerometerRange(MPU6050_RANGE_16_G);
+    m_mpu.setGyroRange(MPU6050_RANGE_1000_DEG);
+    m_mpu.setFilterBandwidth(MPU6050_BAND_44_HZ);
 
     return true;
 }
@@ -13,7 +13,7 @@ bool ImuLowG::init(TwoWire& twire) {
 void ImuLowG::update(Sample& sample) {
     sensors_event_t a, g, t;
 
-    if (!mpu.getEvent(&a, &g, &t)) {
+    if (!m_mpu.getEvent(&a, &g, &t)) {
         return;
     }
 

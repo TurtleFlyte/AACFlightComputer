@@ -8,5 +8,5 @@ public:
     void update(Sample& sample);
 
 private:
-    Adafruit_BMP085 baro;
+    Adafruit_BMP085 m_bmp;
 };

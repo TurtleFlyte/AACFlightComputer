@@ -1,8 +1,16 @@
 #include <CoreTypes.h>
 #include <config.h>
-#include <FlightTask.h>
+#include "FlightTask.h"
+#include <ImuLowG.h>
+#include <Baro.h>
 
-void flightTask(void* arg) {
+static Baro s_baro;
+static ImuLowG s_imu;
+
+void FlightTask(void* arg) {
+    s_imu.init();
+    s_baro.init();
+
     for (;;) {
         Sample sample{};
         s_imu.update(sample);

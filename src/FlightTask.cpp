@@ -1,21 +1,22 @@
 #include <CoreTypes.h>
 #include <config.h>
 #include "FlightTask.h"
-#include <ImuLowG.h>
-#include <Baro.h>
-
-static Baro s_baro;
-static ImuLowG s_imu;
 
 void FlightTask(void* arg) {
     s_imu.init();
     s_baro.init();
 
+    auto logger_queue = static_cast<QueueHandle_t>(arg);
+
     for (;;) {
         Sample sample{};
+        sample.time_ms = millis();
+
         s_imu.update(sample);
         s_baro.update(sample);
 
+        bool sample_queued = xQueueSend(logger_queue, (void*)&sample, 0);
+        
         /* Print out the values */
         Serial.print("Acceleration X: ");
         Serial.print(sample.ax);

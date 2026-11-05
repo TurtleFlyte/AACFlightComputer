@@ -3,23 +3,28 @@
 
 #include <FlightTask.h>
 
+#include "config.h"
+#include "CoreTypes.h"
+
 TaskHandle_t g_flight_task;
 
 void setup() {
     Serial.begin(115200);
     while (!Serial) {;}
 
-    Wire.begin();
     Wire.setClock(400000);
+    Wire.setPins(22, 23);
+    Wire.begin();
 
-    xTaskCreatePinnedToCore(
+    QueueHandle_t logger_queue = xQueueCreate(LOGGER_MAX_QUEUE_DEPTH, sizeof(Sample));
+
+    xTaskCreate(
         FlightTask,
         "FlightTask",
-        8192,
-        nullptr,
+        4096,
+        logger_queue,
         3,
-        &g_flight_task,
-        0);
+        &g_flight_task);
 }
 
 void loop() { vTaskDelete(nullptr); }

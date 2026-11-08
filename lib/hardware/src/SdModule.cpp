@@ -20,6 +20,9 @@ bool SdModule::init(const uint8_t cs_pin) {
     m_log_file.write(LOG_HEADER, sizeof(LOG_HEADER) - 1);
 
     m_ready = true;
+
+    sync();
+
     return true;
 }
 

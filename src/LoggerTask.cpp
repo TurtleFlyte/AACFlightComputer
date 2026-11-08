@@ -11,7 +11,7 @@ void LoggerTask(void* arg) {
     uint32_t last_sync = millis();
 
     for (;;) {
-        if (xQueueReceive(logger_queue, &curr_sample,pdMS_TO_TICKS(100)) == pdTRUE) {
+        if (xQueueReceive(logger_queue, &curr_sample, pdMS_TO_TICKS(100)) == pdTRUE) {
             s_sd.write(curr_sample);
         }
 

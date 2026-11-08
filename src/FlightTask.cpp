@@ -10,15 +10,19 @@ void FlightTask(void* arg) {
     s_baro.init();
 
     auto logger_queue = static_cast<QueueHandle_t>(arg);
+    int dropped = 0;
+
+    TickType_t wake = xTaskGetTickCount();
 
     for (;;) {
         Sample sample{};
         sample.time_ms = millis();
+        sample.dropped = dropped;
 
         s_imu.update(sample);
         s_baro.update(sample);
 
-        if (!xQueueSend(logger_queue, &sample, 0)) sample.dropped++;
+        if (!xQueueSend(logger_queue, &sample, 0)) dropped++;
 
         /* Print out the values */
         // Serial.print("Acceleration X: ");
@@ -55,6 +59,6 @@ void FlightTask(void* arg) {
         // Serial.println(" meters");
         //
         // Serial.println();
-        vTaskDelay(LOOP_PERIOD_MS / portTICK_PERIOD_MS);
+        vTaskDelayUntil(&wake, pdMS_TO_TICKS(LOOP_PERIOD_MS));
     }
 }

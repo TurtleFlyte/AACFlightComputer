@@ -2,7 +2,10 @@
 #include <ImuLowG.h>
 #include <Baro.h>
 
-static Baro s_baro;
-static ImuLowG s_imu;
+#include "SdModule.h"
+
+extern Baro s_baro;
+extern ImuLowG s_imu;
+extern SdModule s_sd;
 
 void FlightTask(void* arg);

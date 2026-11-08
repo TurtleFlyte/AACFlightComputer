@@ -5,6 +5,7 @@
 
 #include "config.h"
 #include "CoreTypes.h"
+#include <SdModule.h>
 
 TaskHandle_t g_flight_task;
 
@@ -17,6 +18,9 @@ void setup() {
     Wire.begin();
 
     QueueHandle_t logger_queue = xQueueCreate(LOGGER_MAX_QUEUE_DEPTH, sizeof(Sample));
+
+    s_sd.init(CS_PIN);
+    s_sd.sync();
 
     xTaskCreate(
         FlightTask,

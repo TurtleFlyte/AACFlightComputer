@@ -8,4 +8,5 @@ struct Sample {
     float temp_c;
     float pressure_pa;
     float alt_m;
+    int dropped;
 };

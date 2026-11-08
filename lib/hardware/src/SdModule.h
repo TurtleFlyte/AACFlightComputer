@@ -14,6 +14,5 @@ private:
 
     char m_log_line[200] = {};
 
-    int m_errors = 0;
     bool m_ready = false;
 };

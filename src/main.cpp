@@ -2,12 +2,13 @@
 #include <Wire.h>
 
 #include <FlightTask.h>
+#include <LoggerTask.h>
 
 #include "config.h"
 #include "CoreTypes.h"
-#include <SdModule.h>
 
 TaskHandle_t g_flight_task;
+TaskHandle_t g_logger_task;
 
 void setup() {
     Serial.begin(115200);
@@ -29,6 +30,14 @@ void setup() {
         logger_queue,
         3,
         &g_flight_task);
+
+    xTaskCreate(
+        LoggerTask,
+        "LoggerTask",
+        8192,
+        logger_queue,
+        1,
+        &g_logger_task);
 }
 
 void loop() { vTaskDelete(nullptr); }

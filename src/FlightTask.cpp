@@ -4,7 +4,6 @@
 
 Baro s_baro;
 ImuLowG s_imu;
-SdModule s_sd;
 
 void FlightTask(void* arg) {
     s_imu.init();
@@ -19,10 +18,7 @@ void FlightTask(void* arg) {
         s_imu.update(sample);
         s_baro.update(sample);
 
-        // bool sample_queued = xQueueSend(logger_queue, (void*)&sample, 0);
-
-        if (s_sd.write(sample)) Serial.println("write successful");
-        s_sd.sync();
+        if (!xQueueSend(logger_queue, &sample, 0)) sample.dropped++;
 
         /* Print out the values */
         // Serial.print("Acceleration X: ");

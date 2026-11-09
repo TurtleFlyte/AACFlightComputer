@@ -1,7 +1,7 @@
 #include <Baro.h>
 
 bool Baro::init(TwoWire& twire) {
-    if (!m_bmp.begin(BMP085_ULTRAHIGHRES, &twire)) return false;
+    if (!m_bmp.begin(BMP085_STANDARD, &twire)) return false;
 
     return true;
 }

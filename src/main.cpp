@@ -22,6 +22,10 @@ void setup() {
 
     s_sd.init(CS_PIN);
 
+    s_imu.init();
+
+    s_baro.init();
+
     xTaskCreate(
         FlightTask,
         "FlightTask",

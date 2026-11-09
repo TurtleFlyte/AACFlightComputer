@@ -6,9 +6,6 @@ Baro s_baro;
 ImuLowG s_imu;
 
 void FlightTask(void* arg) {
-    s_imu.init();
-    s_baro.init();
-
     auto logger_queue = static_cast<QueueHandle_t>(arg);
     int dropped = 0;
 
